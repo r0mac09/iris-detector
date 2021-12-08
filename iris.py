@@ -1,11 +1,11 @@
 import cv2
-import dlib
+# import dlib
 import numpy as np
 
 # Pentru dlib e nevoie de C++ Make din https://visualstudio.microsoft.com/visual-cpp-build-tools/
 
-detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor('./shape_predictor_68_face_landmarks.dat')
+# detector = dlib.get_frontal_face_detector()
+# predictor = dlib.shape_predictor('./shape_predictor_68_face_landmarks.dat')
 
 
 def get_landmarks(image):
@@ -48,5 +48,12 @@ def extract_eye_crops(image, landmarks_list):
     
     
 if __name__ == '__main__':
-    image = cv2.imread('./john-cena.png')
-    get_landmarks(image)
+    key = 0
+
+    cap = cv2.VideoCapture(0)
+
+    while key not in (ord('q'), ord('Q')):
+        _, frame = cap.read()
+
+        cv2.imshow('Frame', frame)
+        key = cv2.waitKey(1)
