@@ -1,6 +1,4 @@
 numpy
 opencv-python
-wheel
-cmake
-dlib
+imutils
 PySimpleGUI

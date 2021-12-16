@@ -15,6 +15,9 @@ def selectare_nume():
     while True:
         event, values = window.read()
 
+        if event in (sg.WIN_CLOSED, 'Cancel'):
+            break
+
         if event == 'Adaugare nou':
             if values[0] == '':
                 sg.Popup('Campul este gol. Introduceti un nume',
@@ -28,9 +31,6 @@ def selectare_nume():
                 break
         elif event.split()[1] in baza_date.keys():
             nume = event
-            break
-
-        if event in (sg.WIN_CLOSED, 'Cancel'):
             break
 
     window.close()
@@ -67,8 +67,8 @@ def achizitie_date():
             break
 
 
-if __name__ == '__main__':
-    sg.theme('DarkBlue')   # Add a little color to your windows
+def gui():
+    sg.theme('DarkBlue')
     # All the stuff inside your window. This is the PSG magic code compactor...
     layout = [[sg.Button('Vizualizare Baza de Date', size=(25, 2))],
               [sg.Button('Editare Baza de Date', size=(25, 2))]]

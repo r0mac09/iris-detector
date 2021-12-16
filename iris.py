@@ -1,59 +1,50 @@
 import cv2
-# import dlib
-import numpy as np
-
-# Pentru dlib e nevoie de C++ Make din https://visualstudio.microsoft.com/visual-cpp-build-tools/
-
-# detector = dlib.get_frontal_face_detector()
-# predictor = dlib.shape_predictor('./shape_predictor_68_face_landmarks.dat')
+import imutils
 
 
-def get_landmarks(image):
-    # Convertim imaginea in alb-negru
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
-    # Detectam fetele din imagine
-    faces = detector(gray, 1)
-    
-    # Creem o lista in care sa adaugam seturile de puncte pentru fiecare fata
-    landmarks_list = []
-    
-    # Iteram prin fiecare fata
-    for face in faces:
-        
-        # Calculam cele 68 de puncte ce dau forma fetei
-        landmarks = predictor(gray, face)
-        
-        # Convertim punctele intr-o matrice de numere intregi cu doua coloane si 68 randuri
-        landmarks_np = np.int32([(landmarks.part(i).x, landmarks.part(i).y) for i in range(68)])
-
-        # Adaugam matricea de puncte in lista
-        landmarks_list.append(landmarks_np)
-
-    return landmarks_list
+FACE_CASCADE_PATH = './data/haarcascade_frontalcatface_extended.xml'
+EYE_CASCADE_PATH = './data/haarcascade_eye.xml'
 
 
-def extract_eye_crops(image, landmarks_list):
-    # Creem o lista in care sa adaugam centrele punctelor corespunzatoare ochilor
-    eye_centers = []
-    
-    for landmarks in landmarks_list:
-        left = np.mean(landmarks[36:42], axis=0)
-        right = np.mean(landmarks[42:48], axis=0)
-        
-        left, right = np.int32(np.round(left)), np.int32(np.round(right))
-        
-        
-        
-    
-    
+face_detector = cv2.CascadeClassifier(FACE_CASCADE_PATH)
+eye_detector = cv2.CascadeClassifier(EYE_CASCADE_PATH)
+
+
 if __name__ == '__main__':
-    key = 0
+	img = cv2.imread('./test.png')
+	# img = imutils.resize(img, width=500)
+	img_g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+	img_g = cv2.equalizeHist(img_g)
+	
 
-    cap = cv2.VideoCapture(0)
+	results = face_detector.detectMultiScale(
+		img_g, scaleFactor=1.05, minNeighbors=5,
+		minSize=(10, 10), flags=cv2.CASCADE_SCALE_IMAGE)
 
-    while key not in (ord('q'), ord('Q')):
-        _, frame = cap.read()
+	print(results)
 
-        cv2.imshow('Frame', frame)
-        key = cv2.waitKey(1)
+	for (fX, fY, fW, fH) in results:
+		print('FACE')
+		# extract the face ROI
+		faceROI = img_g[fY:fY+ fH, fX:fX + fW]
+		# apply eyes detection to the face ROI
+		eyeRects = eye_detector.detectMultiScale(
+			faceROI, scaleFactor=1.1, minNeighbors=10,
+			minSize=(5, 5), flags=cv2.CASCADE_SCALE_IMAGE)
+
+		# loop over the eye bounding boxes
+		for (eX, eY, eW, eH) in eyeRects:
+			print('EYEEE')
+			# draw the eye bounding box
+			ptA = (fX + eX, fY + eY)
+			ptB = (fX + eX + eW, fY + eY + eH)
+			cv2.rectangle(img, ptA, ptB, (0, 0, 255), 2)
+		
+		# draw the face bounding box on the frame
+		cv2.rectangle(img, (fX, fY), (fX + fW, fY + fH),
+			(0, 255, 0), 2)
+
+	
+	cv2.imshow('Test', img)
+
+	cv2.waitKey(0)
