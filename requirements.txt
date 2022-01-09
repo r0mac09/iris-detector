@@ -3,3 +3,4 @@ opencv-python
 imutils
 PySimpleGUI
 autopep8
+pillow

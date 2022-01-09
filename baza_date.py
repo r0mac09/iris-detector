@@ -1,6 +1,9 @@
 from pathlib import Path
 import pickle
 
+
+import cv2
+
 path_dir_baza_date = Path('./db')
 path_backup = path_dir_baza_date / 'baza_date.backup'
 path_baza_date = path_dir_baza_date / 'baza_date.pkl'
@@ -50,3 +53,11 @@ def salvare_baza_date(baza_date):
     with open(path_baza_date, 'wb') as f:
         pickle.dump(baza_date, f)
         print('Baza de date salvata.')
+
+
+def incarca_bd_mock():
+    baza_date = {}
+    for nume in Path('./bd_mock').glob('*'):
+        baza_date[nume.name] = [cv2.imread(str(img)) for img in nume.glob('*')]
+
+    return baza_date
