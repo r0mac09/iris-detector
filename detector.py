@@ -29,17 +29,20 @@ def detect(img):
 
 def detect_pupil(img):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # _, thresh = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
+    _, thresh = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
     # contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    c = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 2, img.shape[0]/2)
+    c = cv2.HoughCircles(thresh, cv2.HOUGH_GRADIENT, 1.2, img.shape[0]/2)
     
-    print(c)
     pupils = []
-    # for l in c:
-    #     for circle in l:
-    #         center = (circle[0], circle[1])
-    #         radius = circle[2]
-    #         pupils.append(center[0], center[1], radius)
+    
+    if c is None:
+        return pupils
+    
+    for l in c:
+        for circle in l:
+            center = (int(circle[0]), int(circle[1]))
+            radius = int(circle[2])
+            pupils.append((center[0], center[1], radius))
     
     return pupils
     
@@ -82,8 +85,6 @@ if __name__ == '__main__':
             pupils = detect_pupil(crop)
             
             for px, py, pr in pupils:
-                cv2.circle(img, (x+px, y+py), pr, (255, 128, 128), 1, cv2.LINE_AA)
-
+                cv2.circle(img, (x+px, y+py), pr, (255, 128, 128), 2, cv2.LINE_AA)
+        key = cv2.waitKey(1)        
         cv2.imshow('Test', img)
-
-        key = cv2.waitKey(1)
