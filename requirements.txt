@@ -1,5 +1,6 @@
 numpy
 opencv-python
+wheel
 imutils
 PySimpleGUI
 autopep8
