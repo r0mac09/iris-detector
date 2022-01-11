@@ -77,7 +77,6 @@ if __name__ == '__main__':
 	print(results)
 
 	for (fX, fY, fW, fH) in results:
-		print('FACE')
 		# extract the face ROI
 		faceROI = img_g[fY:fY+ fH, fX:fX + fW]
 		# apply eyes detection to the face ROI

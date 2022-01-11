@@ -33,6 +33,9 @@ def intializare_baza_date():
             else:
                 print('Backup al bazei de date nu exista.')
 
+    if baza_date is None:
+        return {}
+
     if baza_date != {}:
         print('Baza de date:')
         for nume in baza_date:

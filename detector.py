@@ -29,9 +29,9 @@ def detect(img):
 
 def detect_pupil(img):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    _, thresh = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
+    _, thresh = cv2.threshold(img, 75, 255, cv2.THRESH_BINARY)
     # contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    c = cv2.HoughCircles(thresh, cv2.HOUGH_GRADIENT, 1.2, img.shape[0]/2)
+    c = cv2.HoughCircles(thresh, cv2.HOUGH_GRADIENT, 2, img.shape[0]/2)
     
     pupils = []
     
@@ -63,13 +63,12 @@ def detect_iris(img, pupil):
             img = cv2.bitwise_and(img, mask)
 
 
-
-if __name__ == '__main__':
+def identificare():
     cap = cv2.VideoCapture(0)
 
     key = -1
 
-    while key != ord('q'):
+    while key not in (ord('q'), ord('Q'), 27):
         stat, img = cap.read()
         faces, eyes = detect(img)
 
@@ -88,3 +87,8 @@ if __name__ == '__main__':
                 cv2.circle(img, (x+px, y+py), pr, (255, 128, 128), 2, cv2.LINE_AA)
         key = cv2.waitKey(1)        
         cv2.imshow('Test', img)
+    
+    cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    identificare()
